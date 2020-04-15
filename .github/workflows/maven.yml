@@ -27,7 +27,7 @@ jobs:
         DOCKER_IMAGE_TARGET: docker.pkg.github.com/arothuis-hu/notes-boot/notes-boot:latest
         GITHUB_PACKAGE_REGISTRY_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        docker build --tag ${{ DOCKER_IMAGE_TARGET }} .
+        docker build --tag ${DOCKER_IMAGE_TARGET} .
         docker login docker.pkg.github.com -u ${{ github.actor }} -p "${GITHUB_PACKAGE_REGISTRY_TOKEN}"
         docker push ${DOCKER_IMAGE_TARGET}
         
