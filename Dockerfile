@@ -4,8 +4,8 @@ FROM adoptopenjdk/openjdk13:alpine-jre
 # Set working directory
 WORKDIR /usr/app
 
-# Copy the target jars into the working directory
+# Copy target jars into the working directory
 COPY target/*.jar app.jar
 
-# java -jar /opt/app/app.jar
+# Set the command to run upon start
 ENTRYPOINT ["java","-jar","app.jar"]
