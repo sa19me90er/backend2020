@@ -1,4 +1,4 @@
-name: Java CI with Maven
+name: Maven, Docker
 
 on:
   push:
@@ -22,10 +22,12 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         
-    - name: Publish Docker container to GitHub Packages
-      uses: elgohr/Publish-Docker-Github-Action@master   
-      with:
-        name: owner/repository/image
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
-        registry: docker.pkg.github.com
+    - name: Build  Docker image
+      run: docker buildx build --load -t docker.pkg.github.com/${{ GITHUB_REPOSITORY }}/notes-boot:latest .
+
+    - name: Publish Docker image to GitHub Packages
+      run: |
+        docker login docker.pkg.github.com -u publisher -p "${GITHUB_PACKAGE_REGISTRY_TOKEN}"
+        docker push docker.pkg.github.com/${{ GITHUB_REPOSITORY }}/notes-boot:latest
+      env:
+        GITHUB_PACKAGE_REGISTRY_TOKEN: ${{ secrets.GITHUB_PACKAGE_REGISTRY_TOKEN }}
