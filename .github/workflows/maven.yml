@@ -17,7 +17,15 @@ jobs:
       with:
         java-version: 12
   
-    - name: GitHub packages
+    - name: Publish jar to GitHub Packages
       run: mvn -B clean deploy
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
+    - name: Publish Docker container to GitHub Packages
+      uses: elgohr/Publish-Docker-Github-Action@master   
+      with:
+        name: owner/repository/image
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        registry: docker.pkg.github.com
