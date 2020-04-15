@@ -1,0 +1,27 @@
+version: "3.7"
+
+# Services intended for development
+services:
+  db:
+    image: postgres:12
+    ports:
+      # Expose 5432 on client as 54321 on host
+      - "54321:5432"
+    networks:
+      - db
+    volumes:
+      - "db:/data/postgres"
+    environment:
+      # This is how the base image for postgres is configured
+      # Generate user/password, defaults to "dev"
+      POSTGRES_USER: ${POSTGRES_USER:-dev}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-dev}
+      # Generate database, defaults to "notebook" (need to do this by hand on deployment)
+      POSTGRES_DB: ${POSTGRES_DB:-notebook}
+
+networks:
+  db:
+    driver: bridge
+
+volumes:
+  db:
