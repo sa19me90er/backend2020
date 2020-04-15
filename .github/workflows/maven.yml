@@ -23,11 +23,14 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         
     - name: Build  Docker image
-      run: docker buildx build --load -t docker.pkg.github.com/${{ GITHUB_REPOSITORY }}/notes-boot:latest .
+     
 
-    - name: Publish Docker image to GitHub Packages
-      run: |
-        docker login docker.pkg.github.com -u publisher -p "${GITHUB_PACKAGE_REGISTRY_TOKEN}"
-        docker push docker.pkg.github.com/${{ GITHUB_REPOSITORY }}/notes-boot:latest
+    - name: Build and publish Docker image to GitHub Packages
       env:
+        DOCKER_IMAGE_TARGET: docker.pkg.github.com/arothuis-hu/notes-boot/notes-boot:latest
         GITHUB_PACKAGE_REGISTRY_TOKEN: ${{ secrets.GITHUB_PACKAGE_REGISTRY_TOKEN }}
+      run: |
+        docker buildx build --load -t ${DOCKER_IMAGE_TARGET} .
+        docker login docker.pkg.github.com -u publisher -p "${GITHUB_PACKAGE_REGISTRY_TOKEN}"
+        docker push ${DOCKER_IMAGE_TARGET}
+        
