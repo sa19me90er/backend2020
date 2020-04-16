@@ -62,7 +62,7 @@ jobs:
       
     - name: Build and publish Docker image to GitHub Packages
       env:
-        DOCKER_IMAGE_TARGET: docker.pkg.github.com/arothuis-hu/notes-boot/notes-boot:latest
+        DOCKER_IMAGE_TARGET: docker.pkg.github.com/arothuis-hu/notes-boot/notes-boot:${{ github.sha }}
         GITHUB_PACKAGE_REGISTRY_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         docker build --tag ${DOCKER_IMAGE_TARGET} .
@@ -78,8 +78,8 @@ jobs:
     - name: Deploy Docker image to Heroku
       env:
         GITHUB_PACKAGE_REGISTRY_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        DOCKER_IMAGE_SOURCE: docker.pkg.github.com/arothuis-hu/notes-boot/notes-boot:latest
-        DOCKER_IMAGE_TARGET: registry.heroku.com/arothuis-notes-boot:release
+        DOCKER_IMAGE_SOURCE: docker.pkg.github.com/arothuis-hu/notes-boot/notes-boot:${{ github.sha }}
+        DOCKER_IMAGE_TARGET: registry.heroku.com/arothuis-notes-boot:${{ github.sha }}
         HEROKU_API_KEY: ${{ secrets.HEROKU_TOKEN }}
       run: |
         echo "${GITHUB_PACKAGE_REGISTRY_TOKEN}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
