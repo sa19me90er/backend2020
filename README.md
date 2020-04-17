@@ -10,8 +10,8 @@ as a build pipeline
 and GitHub Packages 
 as an artifact repository.
 
-Tip: look at `end-result` for the
-end result. Pipelines and all.
+Tip: look at the `end-result` 
+branch for the end result. Pipelines and all.
 
 ## 1. Docker Compose
 We use docker-compose for our development
