@@ -30,4 +30,9 @@ jobs:
       - name: Publish jar to GitHub Packages
         run: mvn -B deploy
         env:
+          # Authenticate with GitHub using
+          # token from the secrets context
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DISTRIBUTION_ID: github
+          DISTRIBUTION_NAME: Notes Example Project
+          DISTRIBUTION_URL: https://maven.pkg.github.com/${{ github.repository }}
