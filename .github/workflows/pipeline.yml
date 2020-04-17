@@ -37,7 +37,7 @@ jobs:
 
     # Build our maven target (runs all tests etc)
     - name: Build using Maven
-      run: mvn -B clean package
+      run: mvn clean package
 
     # Save the contents of the "target" directory
     # So we can use it in another job as "build-result"
