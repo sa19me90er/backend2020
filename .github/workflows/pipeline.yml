@@ -66,6 +66,9 @@ jobs:
         env:
           DOCKER_IMAGE_TARGET: docker.pkg.github.com/${{ github.repository }}/notes-example
           GITHUB_PACKAGE_REGISTRY_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # 1. Build a docker image using the specified target as a name
+        # 2. Login to GitHub docker registry by piping the token into the password prompt
+        # 3. Push the image to the registry
         run: |
           docker build --tag ${DOCKER_IMAGE_TARGET} .
           echo "${GITHUB_PACKAGE_REGISTRY_TOKEN}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
