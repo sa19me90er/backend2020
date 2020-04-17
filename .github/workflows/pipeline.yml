@@ -2,6 +2,8 @@ name: Build pipeline
 
 # When should this pipeline run?
 # on pushes to master and PRs to master
+# Note that you may not want to build packages on pull requests!
+# You could also use on: release: ..., for deploying upon tagging a release.
 on:
   push:
     branches: [ master ]
@@ -109,9 +111,10 @@ jobs:
 
       # Run a few (bash) commands to
       # build an publish an image
+      # Using the commit hash as the version number
       - name: Build and publish Docker image to GitHub Packages
         env:
-          DOCKER_IMAGE_TARGET: docker.pkg.github.com/${{ github.repository }}/notes-example
+          DOCKER_IMAGE_TARGET: docker.pkg.github.com/${{ github.repository }}/notes-example:${{ github.sha }}
           GITHUB_PACKAGE_REGISTRY_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         # 1. Build a docker image using the specified target as a name
         # 2. Login to GitHub docker registry by piping the token into the password prompt
