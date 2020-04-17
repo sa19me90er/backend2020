@@ -81,6 +81,26 @@ COPY target/*.jar app.jar
 ENTRYPOINT ["java","-jar","app.jar"]
 ```
 
+Build the container:
+```bash
+docker build -t notes-example .
+```
+
+Run the container:
+```bash
+docker run -p 80:8080 -e DATABASE_URL=postgres://dev:dev@host.docker.internal:54321/notebook 
+notes-example
+```
+
+Note that `host.docker.internal` refers to the `localhost` 
+on the host machine. This does not work on every machine!
+See: https://docs.docker.com/docker-for-windows/networking/#known-limitations-use-cases-and-workarounds
+
+In practice, it is better to link containers up manually
+instead of through the host system. This is one of
+the reasons to use container management systems
+like Docker Compose, Docker Swarm or Kubernetes.
+
 ## 5. Distributable JAR (pom.xml)
 Edit the `pom.xml` to define
 a distribution repository for
