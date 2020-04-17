@@ -1,6 +1,7 @@
 # Notes Example Project
 This project serves as an example
-assignment for working with GitHub Actions
+assignment at Hogeschool Utrecht
+for working with GitHub Actions
 as build pipelines.
 
 We will package a jar 
