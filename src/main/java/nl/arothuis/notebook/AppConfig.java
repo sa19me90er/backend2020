@@ -17,7 +17,6 @@ import java.net.URISyntaxException;
 @Configuration
 @EnableAutoConfiguration(exclude={DataSourceAutoConfiguration.class})
 public class AppConfig {
-
     public static final String DEFAULT_DB_URL = "postgres://dev:dev@localhost:54321/notebook";
 
     @Bean
