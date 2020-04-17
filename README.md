@@ -212,7 +212,7 @@ jobs:
       # Run all maven phases to deployment
       # with our repository as a target
       - name: Publish jar to GitHub Packages
-        run: mvn -B deploy
+        run: mvn deploy
         env:
           # Authenticate with GitHub using
           # token from the secrets context
