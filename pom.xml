@@ -55,12 +55,4 @@
 			</plugin>
 		</plugins>
 	</build>
-
-	<distributionManagement>
-	  <repository>
-	    <id>${env.DISTRIBUTION_ID}</id>
-	    <name>${env.DISTRIBUTION_NAME}</name>
-	    <url>${env.DISTRIBUTION_URL}</url>
-	  </repository>
-	</distributionManagement>
 </project>
