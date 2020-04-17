@@ -10,7 +10,8 @@ on:
 
 # What jobs does this workflow consist of?
 jobs:
-  build:
+  # The job called "package-jar"
+  package-jar:
     # Use ubuntu as an image for our build environment
     runs-on: ubuntu-latest
 
@@ -33,6 +34,39 @@ jobs:
           # Authenticate with GitHub using
           # token from the secrets context
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Add distribution env vars
+          # used in pom.xml
           DISTRIBUTION_ID: github
           DISTRIBUTION_NAME: Notes Example Project
           DISTRIBUTION_URL: https://maven.pkg.github.com/${{ github.repository }}
+
+  # The job called "package-image"
+  package-image:
+      # Use ubuntu as an image for our build environment
+      runs-on: ubuntu-latest
+
+      # What steps does this job consist of?
+      steps:
+      # Checkout the code
+      - uses: actions/checkout@v2
+
+        # Setup version 12 of Java
+      - name: Set up JDK 12
+        uses: actions/setup-java@v1
+        with:
+          java-version: 12
+
+        # Build JAR using maven
+      - name: Build jar
+        run: mvn -B package
+
+        # Run a few (bash) commands to
+        # build an publish an image
+      - name: Build and publish Docker image to GitHub Packages
+        env:
+          DOCKER_IMAGE_TARGET: docker.pkg.github.com/${{ github.repository }}/notes-example
+          GITHUB_PACKAGE_REGISTRY_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          docker build --tag ${DOCKER_IMAGE_TARGET} .
+          echo "${GITHUB_PACKAGE_REGISTRY_TOKEN}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
+          docker push ${DOCKER_IMAGE_TARGET}
