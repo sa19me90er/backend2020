@@ -10,8 +10,46 @@ on:
 
 # What jobs does this workflow consist of?
 jobs:
+  # The job called "build"
+  build:
+    # Use ubuntu as an image for our build environment
+    runs-on: ubuntu-latest
+
+    # What steps does this job consist of?
+    steps:
+    - uses: actions/checkout@v2
+
+    # Setup version 12 of Java
+    - name: Set up JDK 12
+      uses: actions/setup-java@v1
+      with:
+        java-version: 12
+
+    # Cache maven dependencies for each build
+    - uses: actions/cache@v1
+      with:
+        path: ~/.m2/repository
+        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+        restore-keys: |
+          ${{ runner.os }}-maven-
+
+    # Build our maven target (runs all tests etc)
+    - name: Build using Maven
+      run: mvn -B clean package
+
+    # Save the contents of the "target" directory
+    # So we can use it in another job as "build-result"
+    - name: Save result
+      uses: actions/upload-artifact@v1
+      with:
+        name: build-result
+        path: target
+
   # The job called "package-jar"
   package-jar:
+    # This job depends on the "build" job
+    needs: build
+
     # Use ubuntu as an image for our build environment
     runs-on: ubuntu-latest
 
@@ -20,14 +58,22 @@ jobs:
       # Checkout the code
       - uses: actions/checkout@v2
 
-        # Setup version 12 of Java
+      # Load the result called "build-result"
+      # And make it available in the "target" directory
+      - name: Load result
+        uses: actions/download-artifact@v1
+        with:
+          name: build-result
+          path: target
+
+      # Setup version 12 of Java
       - name: Set up JDK 12
         uses: actions/setup-java@v1
         with:
           java-version: 12
 
-        # Run all maven phases to deployment
-        # with our repository as a target
+      # Run all maven phases to deployment
+      # with our repository as a target
       - name: Publish jar to GitHub Packages
         run: mvn -B deploy
         env:
@@ -42,6 +88,9 @@ jobs:
 
   # The job called "package-image"
   package-image:
+      # This job depends on the "build" job
+      needs: build
+
       # Use ubuntu as an image for our build environment
       runs-on: ubuntu-latest
 
@@ -50,18 +99,26 @@ jobs:
       # Checkout the code
       - uses: actions/checkout@v2
 
-        # Setup version 12 of Java
+      # Load the result called "build-result"
+      # And make it available in the "target" directory
+      - name: Load result
+        uses: actions/download-artifact@v1
+        with:
+          name: build-result
+          path: target
+
+      # Setup version 12 of Java
       - name: Set up JDK 12
         uses: actions/setup-java@v1
         with:
           java-version: 12
 
-        # Build JAR using maven
+      # Build JAR using maven
       - name: Build jar
         run: mvn -B package
 
-        # Run a few (bash) commands to
-        # build an publish an image
+      # Run a few (bash) commands to
+      # build an publish an image
       - name: Build and publish Docker image to GitHub Packages
         env:
           DOCKER_IMAGE_TARGET: docker.pkg.github.com/${{ github.repository }}/notes-example
