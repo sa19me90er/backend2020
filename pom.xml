@@ -16,7 +16,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<start-class>nl.arothuis.notebook.NotebookApplication</start-class>
-		<java.version>12</java.version>
+		<java.version>8</java.version>
 	</properties>
 
 	<dependencies>
